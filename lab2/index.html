@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/png" href="https://openweathermap.org/img/wn/01d.png">
+        <link rel="icon" type="image/png" href="https://openweathermap.org/img/wn/04d.png">
+        <link rel="stylesheet" href="styles.css">
+        <link rel="icon" href="https://openweathermap.org/img/wn/03d.png">
+        <title>Weather</title>
+    </head>
+    <body>
+        <main class="container">
+
+            <h1 class="page-title">
+                Погода
+            </h1>
+
+            <section class="card search-card">
+                <input type="text" id="cityInput" placeholder="Введите город, например: Новосибирск">
+                <button id="getBtn">Узнать погоду</button>
+                <button id="updateBtn">Обновить</button>
+            </section>
+
+            <section class="card" id="historyCard">
+                <h2>История городов</h2>
+                <div id="history"></div>
+            </section>
+
+            <section class="card hidden" id="weatherCard">
+                <div id="loader" class="loader hidden"></div>
+                <div id="weatherInfo"></div>
+            </section>
+
+            <section class="card hidden" id="forecastCard">
+                <h2>Прогноз на 5 дней</h2>
+                <div id="forecast"></div>
+            </section>
+
+        </main>
+
+        <script src="app.js"></script>
+    </body>
+</html>
