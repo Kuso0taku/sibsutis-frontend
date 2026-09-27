@@ -1,8 +1,11 @@
 import { getWeather } from "./api.js";
 import { getHistory, saveCity } from "./storage.js";
 import { hideWeather, renderCurrent, renderForecast, renderHistory, showLoader } from "./ui.js";
+import { debounce } from "./utils.js";
 
 const FIVE_MIN = 5 * 60 * 1000;
+const TYPING_DELAY = 500; // live search waits for a pause in typing
+const MIN_CHARS = 3;
 
 const input = document.getElementById("cityInput");
 const getBtn = document.getElementById("getBtn");
@@ -21,6 +24,13 @@ updateBtn.onclick = () => {
 input.addEventListener("keypress", (e) => {
     if (e.key === "Enter") getBtn.click();
 });
+
+input.addEventListener("input", debounce(searchWhileTyping, TYPING_DELAY));
+
+function searchWhileTyping() {
+    const city = input.value.trim();
+    if (city.length >= MIN_CHARS) loadCity(city);
+}
 
 function loadCity(rawCity) {
     const city = rawCity.trim();
