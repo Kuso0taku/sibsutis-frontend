@@ -1,11 +1,25 @@
 import { getWeather } from "./api.js";
 import { getCached, getHistory, saveCity, setCached } from "./storage.js";
-import { hideWeather, renderCurrent, renderForecast, renderHistory, showLoader } from "./ui.js";
+import {
+    hideMessage,
+    hideWeather,
+    renderCurrent,
+    renderForecast,
+    renderHistory,
+    showLoader,
+    showMessage
+} from "./ui.js";
 import { debounce } from "./utils.js";
 
 const FIVE_MIN = 5 * 60 * 1000;
 const TYPING_DELAY = 500; // live search waits for a pause in typing
 const MIN_CHARS = 3;
+
+const ERROR_TITLES = {
+    network: "Нет подключения к интернету",
+    notFound: "Город не найден",
+    unknown: "Что-то пошло не так"
+};
 
 const input = document.getElementById("cityInput");
 const getBtn = document.getElementById("getBtn");
@@ -13,7 +27,7 @@ const updateBtn = document.getElementById("updateBtn");
 
 let lastCity = ""; // last requested city
 let lastFetchTime = 0; // timestamp of the last weather fetch
-let staleAlerted = false; // alert only once per fetch
+let staleShown = false; // show the stale hint only once per fetch
 
 getBtn.onclick = () => loadCity(input.value, true);
 
@@ -35,7 +49,7 @@ function searchWhileTyping() {
 function loadCity(rawCity, useCache) {
     const city = rawCity.trim();
     if (!city) {
-        alert("Введите город");
+        showMessage({ kind: "info", title: "Введите город", text: "Например: Новосибирск" });
         return;
     }
 
@@ -49,7 +63,8 @@ function loadCity(rawCity, useCache) {
         }
     }
 
-    staleAlerted = false;
+    staleShown = false;
+    hideMessage();
     showLoader(true);
 
     getWeather(city)
@@ -59,19 +74,28 @@ function loadCity(rawCity, useCache) {
             setCached(city, weather);
             showWeather(weather);
         })
-        .catch((err) => {
-            showLoader(false);
-            hideWeather();
-            alert(`Город не найден (${err.message})`);
-        });
+        .catch(showError);
 }
 
 function showWeather(weather) {
     lastFetchTime = weather.fetchedAt;
+    hideMessage();
     renderCurrent(weather.current, weather.fetchedAt);
     renderForecast(weather.forecast);
     renderHistory(saveCity(lastCity), selectCity);
     checkStale();
+}
+
+function showError(err) {
+    showLoader(false);
+    hideWeather();
+    showMessage({
+        kind: "error",
+        title: ERROR_TITLES[err.kind] || ERROR_TITLES.unknown,
+        text: err.message,
+        code: err.code,
+        onRetry: () => loadCity(lastCity, false)
+    });
 }
 
 function selectCity(city) {
@@ -80,9 +104,14 @@ function selectCity(city) {
 }
 
 function checkStale() {
-    if (lastFetchTime && Date.now() - lastFetchTime > FIVE_MIN && !staleAlerted) {
-        staleAlerted = true;
-        alert("Погода могла измениться с последнего запроса (прошло больше 5 минут). Нажми Обновить!");
+    if (lastFetchTime && Date.now() - lastFetchTime > FIVE_MIN && !staleShown) {
+        staleShown = true;
+        showMessage({
+            kind: "info",
+            title: "Данные устарели",
+            text: "Погода могла измениться с последнего запроса (прошло больше 5 минут).",
+            onRetry: () => loadCity(lastCity, false)
+        });
     }
 }
 

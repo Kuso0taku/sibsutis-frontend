@@ -67,7 +67,8 @@ body {
     border-color: #8642BD;
 }
 
-.search-card button {
+.search-card button,
+.message-card button {
     padding: 12px 18px;
     border: none;
     border-radius: 10px;
@@ -77,7 +78,8 @@ body {
     cursor: pointer;
 }
 
-.search-card button:hover {
+.search-card button:hover,
+.message-card button:hover {
     background: #a964d6;
 }
 
@@ -171,8 +173,32 @@ body {
     to { transform: rotate(360deg); }
 }
 
-.error {
+.message-card p {
+    color: #9a9aa0;
+    font-size: 15px;
+}
+
+.message-card .code {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #9a9aa0;
+}
+
+.message-card .code span {
+    color: #faede3;
+    font-weight: bold;
+}
+
+.message-card button {
+    margin-top: 15px;
+}
+
+.message-card[data-kind="error"] h2 {
     color: #ff8080;
+}
+
+.message-card[data-kind="info"] h2 {
+    color: #8642BD;
 }
 
 #history button {

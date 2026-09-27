@@ -7,6 +7,11 @@ const forecastCard = document.getElementById("forecastCard");
 const forecastDiv = document.getElementById("forecast");
 const historyCard = document.getElementById("historyCard");
 const historyDiv = document.getElementById("history");
+const messageCard = document.getElementById("messageCard");
+const messageTitle = document.getElementById("messageTitle");
+const messageText = document.getElementById("messageText");
+const messageCode = document.getElementById("messageCode");
+const messageBtn = document.getElementById("messageBtn");
 
 export function showLoader(show) {
     weatherCard.classList.remove("hidden");
@@ -18,6 +23,21 @@ export function showLoader(show) {
 export function hideWeather() {
     weatherCard.classList.add("hidden");
     forecastCard.classList.add("hidden");
+}
+
+export function showMessage({ kind, title, text, code = "", onRetry = null }) {
+    messageCard.dataset.kind = kind; // error messages are red, hints are purple
+    messageTitle.textContent = title;
+    messageText.textContent = text;
+    messageCode.parentElement.classList.toggle("hidden", !code);
+    messageCode.textContent = code;
+    messageBtn.classList.toggle("hidden", !onRetry);
+    messageBtn.onclick = onRetry || null;
+    messageCard.classList.remove("hidden");
+}
+
+export function hideMessage() {
+    messageCard.classList.add("hidden");
 }
 
 export function renderCurrent(data, fetchedAt) {
