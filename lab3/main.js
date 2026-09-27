@@ -46,6 +46,7 @@ function loadCity(rawCity, useCache) {
     if (useCache) {
         const cached = getCached(city);
         if (cached) {
+            showLoader(false); // a previous error may have hidden the cards
             showWeather(cached);
             return;
         }
