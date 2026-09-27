@@ -1,5 +1,5 @@
 import { getWeather } from "./api.js";
-import { getHistory, saveCity } from "./storage.js";
+import { getCached, getHistory, saveCity, setCached } from "./storage.js";
 import { hideWeather, renderCurrent, renderForecast, renderHistory, showLoader } from "./ui.js";
 import { debounce } from "./utils.js";
 
@@ -15,10 +15,10 @@ let lastCity = ""; // last requested city
 let lastFetchTime = 0; // timestamp of the last weather fetch
 let staleAlerted = false; // alert only once per fetch
 
-getBtn.onclick = () => loadCity(input.value);
+getBtn.onclick = () => loadCity(input.value, true);
 
 updateBtn.onclick = () => {
-    if (lastCity) loadCity(lastCity);
+    if (lastCity) loadCity(lastCity, false); // update always asks the API again
 };
 
 input.addEventListener("keypress", (e) => {
@@ -29,10 +29,10 @@ input.addEventListener("input", debounce(searchWhileTyping, TYPING_DELAY));
 
 function searchWhileTyping() {
     const city = input.value.trim();
-    if (city.length >= MIN_CHARS) loadCity(city);
+    if (city.length >= MIN_CHARS) loadCity(city, true);
 }
 
-function loadCity(rawCity) {
+function loadCity(rawCity, useCache) {
     const city = rawCity.trim();
     if (!city) {
         alert("Введите город");
@@ -40,18 +40,24 @@ function loadCity(rawCity) {
     }
 
     lastCity = city;
+
+    if (useCache) {
+        const cached = getCached(city);
+        if (cached) {
+            showWeather(cached);
+            return;
+        }
+    }
+
     staleAlerted = false;
     showLoader(true);
 
     getWeather(city)
         .then((data) => {
             showLoader(false);
-            const fetchedAt = Date.now();
-            lastFetchTime = fetchedAt;
-            renderCurrent(data.current, fetchedAt);
-            renderForecast(data.forecast);
-            renderHistory(saveCity(city), selectCity);
-            checkStale();
+            const weather = { ...data, fetchedAt: Date.now() };
+            setCached(city, weather);
+            showWeather(weather);
         })
         .catch((err) => {
             showLoader(false);
@@ -60,9 +66,17 @@ function loadCity(rawCity) {
         });
 }
 
+function showWeather(weather) {
+    lastFetchTime = weather.fetchedAt;
+    renderCurrent(weather.current, weather.fetchedAt);
+    renderForecast(weather.forecast);
+    renderHistory(saveCity(lastCity), selectCity);
+    checkStale();
+}
+
 function selectCity(city) {
     input.value = city;
-    loadCity(city);
+    loadCity(city, true);
 }
 
 function checkStale() {
