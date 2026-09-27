@@ -10,21 +10,18 @@ const ERROR_TITLES = {
 };
 
 const input = document.getElementById("cityInput");
-const getBtn = document.getElementById("getBtn");
 const updateBtn = document.getElementById("updateBtn");
 
 let lastCity = ""; // last requested city
 let lastFetchTime = 0; // timestamp of the last weather fetch
 let staleShown = false; // show the stale hint only once per fetch
 
-getBtn.onclick = () => loadCity(input.value, true);
-
 updateBtn.onclick = () => {
     if (lastCity) loadCity(lastCity, false); // update always asks the API again
 };
 
-input.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") getBtn.click();
+input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") loadCity(input.value, true);
 });
 
 input.addEventListener("input", debounce(searchWhileTyping, TYPING_DELAY));
