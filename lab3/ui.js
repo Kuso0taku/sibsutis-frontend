@@ -1,5 +1,3 @@
-import { formatDate, signed } from "./utils.js";
-
 const loader = document.getElementById("loader");
 const weatherCard = document.getElementById("weatherCard");
 const weatherInfo = document.getElementById("weatherInfo");
@@ -13,19 +11,19 @@ const messageText = document.getElementById("messageText");
 const messageCode = document.getElementById("messageCode");
 const messageBtn = document.getElementById("messageBtn");
 
-export function showLoader(show) {
+function showLoader(show) {
     weatherCard.classList.remove("hidden");
     loader.classList.toggle("hidden", !show);
     weatherInfo.classList.toggle("hidden", show);
     forecastCard.classList.toggle("hidden", show);
 }
 
-export function hideWeather() {
+function hideWeather() {
     weatherCard.classList.add("hidden");
     forecastCard.classList.add("hidden");
 }
 
-export function showMessage({ kind, title, text, code = "", onRetry = null }) {
+function showMessage({ kind, title, text, code = "", onRetry = null }) {
     messageCard.dataset.kind = kind; // error messages are red, hints are purple
     messageTitle.textContent = title;
     messageText.textContent = text;
@@ -36,11 +34,11 @@ export function showMessage({ kind, title, text, code = "", onRetry = null }) {
     messageCard.classList.remove("hidden");
 }
 
-export function hideMessage() {
+function hideMessage() {
     messageCard.classList.add("hidden");
 }
 
-export function renderCurrent(data, fetchedAt) {
+function renderCurrent(data, fetchedAt) {
     const icon = data.weather[0].icon;
     weatherInfo.innerHTML = `
         <div class="weather-main">
@@ -64,7 +62,7 @@ export function renderCurrent(data, fetchedAt) {
         <div class="last-updated">Обновлено: ${new Date(fetchedAt).toLocaleTimeString()}</div>`;
 }
 
-export function renderForecast(data) {
+function renderForecast(data) {
     const days = pickFiveDays(data.list);
 
     forecastDiv.innerHTML = days.map((item) => `
@@ -92,7 +90,7 @@ function pickFiveDays(list) {
     return days;
 }
 
-export function renderHistory(cities, onSelect) {
+function renderHistory(cities, onSelect) {
     if (!cities.length) {
         historyCard.classList.add("hidden");
         historyDiv.innerHTML = "";

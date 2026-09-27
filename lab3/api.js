@@ -28,7 +28,7 @@ async function request(path, city) {
     return data;
 }
 
-export async function getWeather(city) {
+async function getWeather(city) {
     const [current, forecast] = await Promise.all([
         request("weather", city),
         request("forecast", city)

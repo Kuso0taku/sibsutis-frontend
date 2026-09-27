@@ -2,7 +2,7 @@ const HISTORY_KEY = "cities";
 const CACHE_KEY = "weather-cache";
 const MAX_HISTORY = 5;
 
-export function getHistory() {
+function getHistory() {
     try {
         return JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
     } catch (e) {
@@ -10,7 +10,7 @@ export function getHistory() {
     }
 }
 
-export function saveCity(city) {
+function saveCity(city) {
     const cities = getHistory().filter((c) => c.toLowerCase() !== city.toLowerCase()); // no duplicates
     cities.unshift(city);
     const latest = cities.slice(0, MAX_HISTORY); // keep last five
@@ -26,11 +26,11 @@ function readCache() {
     }
 }
 
-export function getCached(city) {
+function getCached(city) {
     return readCache()[city.trim().toLowerCase()] || null; // city names ignore case
 }
 
-export function setCached(city, data) {
+function setCached(city, data) {
     const cache = readCache();
     cache[city.trim().toLowerCase()] = data;
     try {

@@ -1,4 +1,4 @@
-export function debounce(fn, delay) {
+function debounce(fn, delay) {
     let timer = null;
     return function (...args) {
         clearTimeout(timer); // restart the timer on every call
@@ -6,12 +6,12 @@ export function debounce(fn, delay) {
     };
 }
 
-export function signed(t) {
+function signed(t) {
     const value = Math.round(t);
     return (value > 0 ? "+" : "") + value + "°C";
 }
 
-export function formatDate(dt) {
+function formatDate(dt) {
     const [, month, day] = dt.slice(0, 10).split("-");
     return `${day}-${month}`;
 }

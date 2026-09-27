@@ -1,16 +1,4 @@
-import { getWeather } from "./api.js";
-import { getCached, getHistory, saveCity, setCached } from "./storage.js";
-import {
-    hideMessage,
-    hideWeather,
-    renderCurrent,
-    renderForecast,
-    renderHistory,
-    showLoader,
-    showMessage
-} from "./ui.js";
-import { debounce } from "./utils.js";
-
+// loads last: it uses utils.js, storage.js, api.js and ui.js
 const FIVE_MIN = 5 * 60 * 1000;
 const TYPING_DELAY = 500; // live search waits for a pause in typing
 const MIN_CHARS = 3;
