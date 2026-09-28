@@ -24,7 +24,7 @@ function hideWeather() {
 }
 
 function showMessage({ kind, title, text, code = "", onRetry = null }) {
-    messageCard.dataset.kind = kind; // error messages are red, hints are purple
+    messageCard.dataset.kind = kind;
     messageTitle.textContent = title;
     messageText.textContent = text;
     messageCode.parentElement.classList.toggle("hidden", !code);
@@ -77,7 +77,7 @@ function renderForecast(data) {
 }
 
 function pickFiveDays(list) {
-    const seenDays = new Set(); // one item per day
+    const seenDays = new Set();
     const days = [];
     for (const item of list) {
         const date = item.dt_txt.slice(0, 10);

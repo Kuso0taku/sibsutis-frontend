@@ -1,7 +1,7 @@
 function debounce(fn, delay) {
     let timer = null;
     return function (...args) {
-        clearTimeout(timer); // restart the timer on every call
+        clearTimeout(timer);
         timer = setTimeout(() => fn.apply(this, args), delay);
     };
 }

@@ -2,7 +2,7 @@ const API_KEY = "5d274a8694e3fae7d0651972d90b5669";
 const BASE = "https://api.openweathermap.org/data/2.5";
 
 function fail(kind, code, message) {
-    return { kind, code, message }; // kind: network | notFound | unknown
+    return { kind, code, message };
 }
 
 async function request(path, city) {

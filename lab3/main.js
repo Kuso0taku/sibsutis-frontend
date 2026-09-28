@@ -1,6 +1,5 @@
-// loads last: it uses utils.js, storage.js, api.js and ui.js
 const FIVE_MIN = 5 * 60 * 1000;
-const TYPING_DELAY = 500; // live search waits for a pause in typing
+const TYPING_DELAY = 500;
 const MIN_CHARS = 3;
 
 const ERROR_TITLES = {
@@ -12,12 +11,12 @@ const ERROR_TITLES = {
 const input = document.getElementById("cityInput");
 const updateBtn = document.getElementById("updateBtn");
 
-let lastCity = ""; // last requested city
-let lastFetchTime = 0; // timestamp of the last weather fetch
-let staleShown = false; // show the stale hint only once per fetch
+let lastCity = "";
+let lastFetchTime = 0;
+let staleShown = false;
 
 updateBtn.onclick = () => {
-    if (lastCity) loadCity(lastCity, false); // update always asks the API again
+    if (lastCity) loadCity(lastCity, false);
 };
 
 input.addEventListener("keydown", (e) => {
@@ -43,7 +42,7 @@ function loadCity(rawCity, useCache) {
     if (useCache) {
         const cached = getCached(city);
         if (cached) {
-            showLoader(false); // a previous error may have hidden the cards
+            showLoader(false);
             showWeather(cached);
             return;
         }
@@ -101,6 +100,6 @@ function checkStale() {
     }
 }
 
-setInterval(checkStale, 30000); // poll for staleness
+setInterval(checkStale, 30000);
 
 renderHistory(getHistory(), selectCity);
