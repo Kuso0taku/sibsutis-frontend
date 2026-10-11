@@ -12,24 +12,34 @@ function App() {
   const { points, spectrum, addPoint, clear, load } = useFourier()
   const { shapes, push, reset, limit } = useShapeHistory()
   const [message, setMessage] = useState('Draw a shape on the canvas.')
+  const [warning, setWarning] = useState(false)
 
   function handleSave() {
+    const willDropOldest = shapes.length >= limit
     push(points)
-    setMessage(`Saved to history (max ${limit}).`)
+    setWarning(willDropOldest)
+    setMessage(
+      willDropOldest
+        ? `History is full (${limit}). The first shape was removed to store the new one.`
+        : 'Saved to history.',
+    )
   }
 
   function handleClear() {
     clear()
+    setWarning(false)
     setMessage('Canvas cleared.')
   }
 
   function handleLoad(shape) {
     load(shape)
+    setWarning(false)
     setMessage('Shape loaded from history.')
   }
 
   function handleClearHistory() {
     reset()
+    setWarning(false)
     setMessage('History cleared.')
   }
 
@@ -44,7 +54,9 @@ function App() {
           onClear={handleClear}
           onSave={handleSave}
         />
-        <p className="message">{message}</p>
+        <p className={warning ? 'message message-warning' : 'message'}>
+          {message}
+        </p>
       </Card>
 
       <Card title="Spectrum">
