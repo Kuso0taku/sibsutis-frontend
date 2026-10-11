@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 const STORAGE_KEY = 'fourier-lens:history'
-const MAX_SHAPES = 10
+const MAX_SHAPES = 15
 
 function readStored(maxShapes) {
   try {
