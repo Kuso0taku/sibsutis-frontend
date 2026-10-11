@@ -88,6 +88,10 @@
     color: #9a9aa0;
 }
 
+.message-warning {
+    color: #ff8080;
+}
+
 .spectrum {
     display: flex;
     align-items: flex-end;

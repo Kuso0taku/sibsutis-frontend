@@ -1,30 +1,46 @@
 import { useState } from 'react'
 import Canvas from '@/components/Canvas'
 import Controls from '@/components/Controls'
-import Library from '@/components/Library'
+import History from '@/components/History'
 import Spectrum from '@/components/Spectrum'
 import Card from '@/shared/Card'
 import { useFourier } from '@/hooks/useFourier'
+import { useShapeHistory } from '@/hooks/useShapeHistory'
 import './App.css'
 
 function App() {
   const { points, spectrum, addPoint, clear, load } = useFourier()
-  const [saved, setSaved] = useState([])
+  const { shapes, push, reset, limit } = useShapeHistory()
   const [message, setMessage] = useState('Draw a shape on the canvas.')
+  const [warning, setWarning] = useState(false)
 
   function handleSave() {
-    setSaved((previous) => [...previous, points])
-    setMessage(`Saved shape #${saved.length + 1}.`)
+    const willDropOldest = shapes.length >= limit
+    push(points)
+    setWarning(willDropOldest)
+    setMessage(
+      willDropOldest
+        ? `History is full. The first shape was removed to store the new one.`
+        : 'Saved to history.',
+    )
   }
 
   function handleClear() {
     clear()
+    setWarning(false)
     setMessage('Canvas cleared.')
   }
 
   function handleLoad(shape) {
     load(shape)
-    setMessage('Shape loaded.')
+    setWarning(false)
+    setMessage('Shape loaded from history.')
+  }
+
+  function handleClearHistory() {
+    reset()
+    setWarning(false)
+    setMessage('History cleared.')
   }
 
   return (
@@ -38,15 +54,22 @@ function App() {
           onClear={handleClear}
           onSave={handleSave}
         />
-        <p className="message">{message}</p>
+        <p className={warning ? 'message message-warning' : 'message'}>
+          {message}
+        </p>
       </Card>
 
       <Card title="Spectrum">
         <Spectrum spectrum={spectrum} />
       </Card>
 
-      <Card title="Library">
-        <Library shapes={saved} onLoad={handleLoad} />
+      <Card title="History">
+        <History
+          shapes={shapes}
+          limit={limit}
+          onLoad={handleLoad}
+          onClear={handleClearHistory}
+        />
       </Card>
     </div>
   )
