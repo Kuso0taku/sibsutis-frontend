@@ -1,20 +1,21 @@
 import { useState } from 'react'
 import Canvas from '@/components/Canvas'
 import Controls from '@/components/Controls'
-import Library from '@/components/Library'
+import History from '@/components/History'
 import Spectrum from '@/components/Spectrum'
 import Card from '@/shared/Card'
 import { useFourier } from '@/hooks/useFourier'
+import { useShapeHistory } from '@/hooks/useShapeHistory'
 import './App.css'
 
 function App() {
   const { points, spectrum, addPoint, clear, load } = useFourier()
-  const [saved, setSaved] = useState([])
+  const { shapes, push, reset, limit } = useShapeHistory()
   const [message, setMessage] = useState('Draw a shape on the canvas.')
 
   function handleSave() {
-    setSaved((previous) => [...previous, points])
-    setMessage(`Saved shape #${saved.length + 1}.`)
+    push(points)
+    setMessage(`Saved to history (max ${limit}).`)
   }
 
   function handleClear() {
@@ -24,7 +25,12 @@ function App() {
 
   function handleLoad(shape) {
     load(shape)
-    setMessage('Shape loaded.')
+    setMessage('Shape loaded from history.')
+  }
+
+  function handleClearHistory() {
+    reset()
+    setMessage('History cleared.')
   }
 
   return (
@@ -45,8 +51,13 @@ function App() {
         <Spectrum spectrum={spectrum} />
       </Card>
 
-      <Card title="Library">
-        <Library shapes={saved} onLoad={handleLoad} />
+      <Card title="History">
+        <History
+          shapes={shapes}
+          limit={limit}
+          onLoad={handleLoad}
+          onClear={handleClearHistory}
+        />
       </Card>
     </div>
   )
