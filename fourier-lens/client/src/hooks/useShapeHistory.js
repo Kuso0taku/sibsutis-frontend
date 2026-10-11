@@ -9,7 +9,7 @@ function readStored(maxShapes) {
     if (!raw) return []
     const parsed = JSON.parse(raw)
     if (!Array.isArray(parsed)) return []
-    return parsed.slice(0, maxShapes)
+    return parsed.slice(-maxShapes)
   } catch {
     return []
   }
