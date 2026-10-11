@@ -20,7 +20,7 @@ function App() {
     setWarning(willDropOldest)
     setMessage(
       willDropOldest
-        ? `History is full (${limit}). The first shape was removed to store the new one.`
+        ? `History is full. The first shape was removed to store the new one.`
         : 'Saved to history.',
     )
   }
