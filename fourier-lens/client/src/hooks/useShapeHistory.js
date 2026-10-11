@@ -27,7 +27,7 @@ export function useShapeHistory(maxShapes = MAX_SHAPES) {
   }, [shapes])
 
   function push(points) {
-    setShapes((previous) => [points, ...previous].slice(0, maxShapes))
+    setShapes((previous) => [...previous, points].slice(-maxShapes))
   }
 
   function reset() {

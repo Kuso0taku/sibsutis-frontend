@@ -10,14 +10,12 @@ function History({ shapes, limit, onLoad, onClear }) {
       <div className="library">
         {shapes.map((shape, index) => (
           <Button key={index} variant="ghost" onClick={() => onLoad(shape)}>
-            Shape {shapes.length - index}
+            Shape {index + 1}
           </Button>
         ))}
       </div>
       <div className="controls">
-        <Button variant="ghost" onClick={onClear}>
-          Clear history
-        </Button>
+        <Button onClick={onClear}>Clear history</Button>
         <span className="counter">
           {shapes.length}/{limit}
         </span>
